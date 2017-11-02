@@ -13,13 +13,31 @@ var io = socketIO(server);
 io.on('connection', socket => {
     console.log('New connection');
 
+    socket.emit('newMessage', {
+        from: 'admin',
+        message: 'welcome to our corner',
+        createdAt: new Date().getTime()
+    })
+
+    socket.broadcast.emit('newMessage', {
+        from: 'admin',
+        message: 'new user joined our corner',
+        createdAt: new Date().getTime()
+    })
+    
     socket.on('createMessage', data => {
         console.log('createMessage event received on server', data);
         io.emit('newMessage', {
             from: data.from,
             message: data.message,
             createdAt : new Date().getTime()
-        })
+        });
+        // socket.broadcast.emit('newMessage', {
+        //     from: data.from,
+        //     message: data.message,
+        //     createdAt : new Date().getTime()
+        // });
+        
     });
 
     socket.on('disconnect', () => {
