@@ -18,9 +18,10 @@ io.on('connection', socket => {
 
     socket.broadcast.emit('newMessage', generateMessage('admin', 'new user joined our corner'));
     
-    socket.on('createMessage', data => {
+    socket.on('createMessage', (data, callback) => {
         console.log('createMessage event received on server', data);
-        io.emit('newMessage', generateMessage(data.from, data.message));
+        io.emit('newMessage', generateMessage(data.from, data.text));
+        callback('data from server');
         // socket.broadcast.emit('newMessage', {
         //     from: data.from,
         //     message: data.message,
