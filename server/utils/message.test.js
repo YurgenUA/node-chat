@@ -1,6 +1,6 @@
 const expect = require('expect');
 
-const {generateMessage} = require('./message');
+const {generateMessage, generateLocationMessage} = require('./message');
 
 describe('generateMessage', () =>{
     it('should generate correct message object', ()=> {
@@ -11,4 +11,15 @@ describe('generateMessage', () =>{
         text: 'text t'
       });
     });
+});
+
+describe('generateLocationMessage', () =>{
+  it('should generate correct message object', ()=> {
+      var res = generateLocationMessage('from t', 20, 45.45);
+     expect(res.createdAt).toBeA('number');
+    expect(res).toInclude({
+      from:'from t',
+      url: 'https://www.google.com/maps?q=20,45.45'
+    });
+  });
 });
