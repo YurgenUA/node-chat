@@ -32,6 +32,7 @@ jQuery('#message-form').on('submit', function(e) {
         text: jQuery('[name=message]').val()
     }, (data) => {
         console.log(`Acknowledgement from server with data "${data}"`);
+        jQuery('[name=message]').val('');
     });
     
     e.preventDefault();
@@ -46,12 +47,15 @@ locationButton.on('click', function () {
         return alert('Geo not supported by your browser');
     }
 
+    locationButton.attr('disabled', 'disabled').text('Sending location...');
     navigator.geolocation.getCurrentPosition( position => {
+        locationButton.removeAttr('disabled').text('Send location');
         socket.emit('createLocationMessage', {
             lat : position.coords.latitude,
             long: position.coords.longitude
         });
     }, () =>{
+        locationButton.removeAttr('disabled').text('Send location');
         alert('unable to fetch location.')
     })
 });
