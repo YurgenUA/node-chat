@@ -17,13 +17,33 @@ function ScrollToBottom(){
 }
 
 socket.on('connect', function() {
-    console.log('Connected to server');
+    var params = jQuery.deparam(window.location.search);
 
+    socket.emit('join', params, function(err) {
+        if (err){
+            alert(err);
+            window.location.href = '/';
+        } else {
+            console.log('no error');
+        }
+    })
 });
 socket.on('disconnect', function() {
     console.log('Disconnected from server');
 });
+
+socket.on('updateUserList', function(users) {
+    var ol = jQuery('<ol></ol>');
+
+    users.forEach(user => {
+        ol.append(jQuery('<li></li>').text(user));
+    });
+
+    jQuery('#users').html(ol);
+});
+
 socket.on('newMessage', function(email) {
+    console.log('on newMessage', email);
     var formattedTime = moment(email.createdAt).format('h:mm a');
     var template = jQuery('#message-template').html();
     var html = Mustache.render(template, {
@@ -31,6 +51,7 @@ socket.on('newMessage', function(email) {
         from: email.from,
         createdAt: formattedTime
     });
+    console.log('on newMessage', html);
     jQuery('#messages').append(html);
     ScrollToBottom();
 });
